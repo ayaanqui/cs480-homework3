@@ -26,3 +26,5 @@ buildNumber.properties
 .factorypath
 .project
 .vscode/
+
+src/main/resources/db_config.json
