@@ -21,18 +21,26 @@ public class DB {
         this.filename = filename;
     }
 
+    /**
+     * Parses and get the database config details (username, password, and db name)
+     * from the file given in the constructor
+     * 
+     * @return Database connection config details
+     */
     public DbConfig getConfig() {
         ClassLoader classLoader = getClass().getClassLoader();
+        // Load file
         File file = new File(classLoader.getResource(filename).getFile());
         try {
+            // Convert file contents into string
             String rawJson = FileUtils.readFileToString(file, "UTF-8");
+
+            // Parse rawJson string into JSON object mapped to DbConfig class
             Gson gson = new Gson();
             return gson.fromJson(rawJson, DbConfig.class);
         } catch (IOException e) {
-            System.err.println(e);
             return null;
         } catch (JsonSyntaxException e) {
-            System.err.println(e);
             return null;
         }
     }

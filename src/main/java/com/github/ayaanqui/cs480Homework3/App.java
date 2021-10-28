@@ -10,14 +10,16 @@ public class App {
                 password)) {
             return conn;
         } catch (SQLException e) {
-            System.out.println(e);
             return null;
         }
     }
 
     public static void main(String[] args) {
-        System.out.println("Hello");
         DB.DbConfig dbConfig = new DB("db_config.json").getConfig();
+        if (dbConfig == null) {
+            System.err.println("File not found or json is invalid. Make sure to read README.md file");
+        }
+
         Connection c = establishConnect(dbConfig.username, dbConfig.password, dbConfig.dbName);
         if (c == null) {
             System.err.println("Could not establish connection with DB");
