@@ -15,14 +15,17 @@ public class App {
     }
 
     public static void main(String[] args) {
-        DB.DbConfig dbConfig = new DB("db_config.json").getConfig();
+        String filename = "db_config1.json";
+        DB.DbConfig dbConfig = new DB(filename).getConfig();
         if (dbConfig == null) {
             System.err.println("File not found or json is invalid. Make sure to read README.md file");
         }
 
         Connection c = establishConnect(dbConfig.username, dbConfig.password, dbConfig.dbName);
         if (c == null) {
-            System.err.println("Could not establish connection with DB");
+            System.err.printf(
+                    "Could not establish connection with DB. Make sure %s has the username, password, and database name",
+                    filename);
         }
         System.out.println(c.toString());
     }
