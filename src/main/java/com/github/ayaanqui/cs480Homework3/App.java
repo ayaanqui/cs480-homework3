@@ -6,36 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class App {
-    public static Connection establishConnect(String username, String password, String dbName) {
-        try {
-            return DriverManager.getConnection("jdbc:mysql://localhost:3306/" + dbName, username, password);
-        } catch (SQLException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Creates employee and department tables. And creates relations between the two
-     * tables
-     * 
-     * @param conn Active MySQL connection
-     */
-    public static void createTables(final Connection conn) {
-        try (Statement statement = conn.createStatement()) {
-            String createEmployeeTable = "CREATE TABLE IF NOT EXISTS employee" + "(ename VARCHAR(255) NOT NULL,"
-                    + " deptName VARCHAR(255) NOT NULL," + " salary DECIMAL(13,2) NOT NULL,"
-                    + " city VARCHAR(255) NOT NULL," + " PRIMARY KEY (ename))";
-            String createDepartmentTable = "CREATE TABLE IF NOT EXISTS department" + "(deptName VARCHAR(255) NOT NULL,"
-                    + " mname VARCHAR(255) NOT NULL," + " PRIMARY KEY (deptName))";
-
-            statement.executeUpdate(createEmployeeTable);
-            statement.executeUpdate(createDepartmentTable);
-            statement.close();
-        } catch (SQLException e) {
-            System.err.println(e);
-        }
-    }
-
     public static void main(String[] args) {
         String filename = "db_config.json";
         DB.DbConfig dbConfig = new DB(filename).getConfig();
@@ -59,6 +29,36 @@ public class App {
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static Connection establishConnect(String username, String password, String dbName) {
+        try {
+            return DriverManager.getConnection("jdbc:mysql://localhost:3306/" + dbName, username, password);
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Creates employee and department tables. And creates relations between the two
+     * tables
+     * 
+     * @param conn Active MySQL connection
+     */
+    private static void createTables(final Connection conn) {
+        try (Statement statement = conn.createStatement()) {
+            String createEmployeeTable = "CREATE TABLE IF NOT EXISTS employee" + "(ename VARCHAR(255) NOT NULL,"
+                    + " deptName VARCHAR(255) NOT NULL," + " salary DECIMAL(13,2) NOT NULL,"
+                    + " city VARCHAR(255) NOT NULL," + " PRIMARY KEY (ename))";
+            String createDepartmentTable = "CREATE TABLE IF NOT EXISTS department" + "(deptName VARCHAR(255) NOT NULL,"
+                    + " mname VARCHAR(255) NOT NULL," + " PRIMARY KEY (deptName))";
+
+            statement.executeUpdate(createEmployeeTable);
+            statement.executeUpdate(createDepartmentTable);
+            statement.close();
+        } catch (SQLException e) {
+            System.err.println(e);
         }
     }
 }
