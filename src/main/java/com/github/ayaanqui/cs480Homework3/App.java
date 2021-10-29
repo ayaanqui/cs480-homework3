@@ -32,7 +32,7 @@ public class App {
             statement.executeUpdate(createEmployeeTable);
             statement.executeUpdate(createDepartmentTable);
         } catch (SQLException e) {
-            System.err.println(e.toString());
+            System.err.println(e);
         }
     }
 
@@ -46,17 +46,12 @@ public class App {
         final Connection conn = establishConnect(dbConfig.username, dbConfig.password, dbConfig.dbName);
         if (conn == null) {
             System.err.printf(
-                    "Could not establish connection with DB. Make sure %s has the username, password, and database name",
+                    "Could not establish connection with DB. Make sure %s has the correct username, password, and database name\n",
                     filename);
             return;
         }
 
         // Creates employee and department tables
         createTables(conn);
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 }
