@@ -30,6 +30,7 @@ public class App {
 
             statement.executeUpdate(createEmployeeTable);
             statement.executeUpdate(createDepartmentTable);
+            statement.close();
         } catch (SQLException e) {
             System.err.println(e);
         }
@@ -52,5 +53,12 @@ public class App {
 
         // Creates employee and department tables
         createTables(conn);
+
+        // Close active MySQL connection
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
