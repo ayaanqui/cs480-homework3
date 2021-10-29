@@ -7,9 +7,8 @@ import java.sql.Statement;
 
 public class App {
     public static Connection establishConnect(String username, String password, String dbName) {
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + dbName, username,
-                password)) {
-            return conn;
+        try {
+            return DriverManager.getConnection("jdbc:mysql://localhost:3306/" + dbName, username, password);
         } catch (SQLException e) {
             return null;
         }
@@ -24,7 +23,7 @@ public class App {
     public static void createTables(final Connection conn) {
         try (Statement statement = conn.createStatement()) {
             String createEmployeeTable = "CREATE TABLE IF NOT EXISTS employee" + "(ename VARCHAR(255) NOT NULL,"
-                    + " deptName VARCHAR(255) NOT NULL" + " salary DECIMAL(13,2) NOT NULL"
+                    + " deptName VARCHAR(255) NOT NULL," + " salary DECIMAL(13,2) NOT NULL,"
                     + " city VARCHAR(255) NOT NULL," + " PRIMARY KEY (ename))";
             String createDepartmentTable = "CREATE TABLE IF NOT EXISTS department" + "(deptName VARCHAR(255) NOT NULL,"
                     + " mname VARCHAR(255) NOT NULL," + " PRIMARY KEY (deptName))";
