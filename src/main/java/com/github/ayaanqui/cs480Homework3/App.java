@@ -6,32 +6,47 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class App {
-    public static void main(String[] args) {
-        String filename = "db_config.json";
-        DB.DbConfig dbConfig = new DB(filename).getConfig();
-        if (dbConfig == null) {
-            System.err.println("File not found or json is invalid. Make sure to read README.md file");
-        }
+    private static final String CONFIG_FILE = "db_config.json";
 
-        final Connection conn = establishConnect(dbConfig.username, dbConfig.password, dbConfig.dbName);
+    public static void main(String[] args) {
+        final Connection conn = connect(); // Get MySQL connection
         if (conn == null) {
             System.err.printf(
                     "Could not establish connection with DB. Make sure %s has the correct username, password, and database name\n",
-                    filename);
+                    CONFIG_FILE);
             return;
         }
+        createTables(conn); // Creates employee and department tables
 
-        // Creates employee and department tables
-        createTables(conn);
-
-        // Close active MySQL connection
         try {
-            conn.close();
+            conn.close(); // Close active MySQL connection
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Connects to a MySQL database with config details from
+     * <code>db_config.json</code> file
+     * 
+     * @return Acitve connection to database
+     */
+    private static Connection connect() {
+        DB.DbConfig dbConfig = new DB(CONFIG_FILE).getConfig();
+        if (dbConfig == null) {
+            System.err.println("File not found or json is invalid. Make sure to read README.md file");
+        }
+        return establishConnect(dbConfig.username, dbConfig.password, dbConfig.dbName);
+    }
+
+    /**
+     * Connects to a MySQL database with a username, password, and dbname
+     * 
+     * @param username Database username
+     * @param password Database password
+     * @param dbName   Database schema name
+     * @return Acitve connection to database
+     */
     private static Connection establishConnect(String username, String password, String dbName) {
         try {
             return DriverManager.getConnection("jdbc:mysql://localhost:3306/" + dbName, username, password);
