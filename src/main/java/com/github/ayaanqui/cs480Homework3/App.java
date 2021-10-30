@@ -67,9 +67,12 @@ public class App {
                     + " deptName VARCHAR(255) NOT NULL," + " salary DECIMAL(13,2) NOT NULL,"
                     + " city VARCHAR(255) NOT NULL," + " PRIMARY KEY (ename))";
             String createDepartmentTable = "CREATE TABLE IF NOT EXISTS department" + "(deptName VARCHAR(255) NOT NULL,"
-                    + " mname VARCHAR(255) NOT NULL," + " PRIMARY KEY (deptName))";
+                    + " mname VARCHAR(255) NOT NULL," + " PRIMARY KEY (deptName),"
+                    + " FOREIGN KEY (mname) REFERENCES employee(ename) ON DELETE CASCADE ON UPDATE CASCADE)";
 
+            // Create employee table
             statement.executeUpdate(createEmployeeTable);
+            // Create department table with foreign key refrencing employee.ename
             statement.executeUpdate(createDepartmentTable);
             statement.close();
         } catch (SQLException e) {
