@@ -91,7 +91,9 @@ public class App {
                 return pstmt;
             case 3:
                 // Perform delete on existing department tuple
-                return null;
+                pstmt = this.conn.prepareStatement("DELETE FROM department WHERE deptName = ?");
+                pstmt.setString(1, parsedLine[1]);
+                return pstmt;
             case 4:
                 // Perform insertion on department order: deptName, mname
                 return null;
@@ -108,6 +110,9 @@ public class App {
             return null;
         } catch (SQLException e) {
             System.err.println("Incorrect command params provided.");
+            return null;
+        } catch (IndexOutOfBoundsException e) {
+            System.err.println("Incorrect number of params provided.");
             return null;
         }
     }
