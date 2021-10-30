@@ -55,10 +55,10 @@ public class App {
                 }).toArray(String[]::new);
 
                 // Handle command operation
-                PreparedStatement pstmt = this.handleCommands(parsedLine);
-                if (pstmt == null)
+                final PreparedStatement preparedReturn = this.handleCommands(parsedLine);
+                if (preparedReturn == null)
                     break;
-                pstmt.execute();
+                preparedReturn.execute();
             }
         } catch (FileNotFoundException e) {
             System.err.printf(
@@ -73,14 +73,16 @@ public class App {
     private PreparedStatement handleCommands(final String[] parsedLine) {
         try {
             final int cmd = Integer.parseInt(parsedLine[0]);
-            System.out.println("Command: " + cmd);
+            PreparedStatement pstmt = null;
             switch (cmd) {
             case 1:
                 // Perform delete on existing employee
-                return null;
+                pstmt = this.conn.prepareStatement("DELETE FROM employee WHERE ename = ?");
+                pstmt.setString(1, parsedLine[1]);
+                return pstmt;
             case 2:
                 // Perform insertion on employee order: ename, deptName, salary, city
-                final PreparedStatement pstmt = this.conn
+                pstmt = this.conn
                         .prepareStatement("INSERT INTO employee (ename, deptName, salary, city) VALUES(?, ?, ?, ?)");
                 pstmt.setString(1, parsedLine[1]);
                 pstmt.setString(2, parsedLine[2]);
