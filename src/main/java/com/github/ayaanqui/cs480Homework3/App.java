@@ -3,7 +3,9 @@ package com.github.ayaanqui.cs480Homework3;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class App {
@@ -45,45 +47,66 @@ public class App {
                 if (line.charAt(0) == '*')
                     continue;
 
-                final String[] parsedLine = line.split(" ");
-                boolean commandResult = this.handleCommands(parsedLine);
-                if (!commandResult)
+                // Split line by space into String array
+                String[] parsedLine = line.split(" ");
+                // Remove empty elements from parsedLine using Array streams
+                parsedLine = Arrays.stream(parsedLine).filter(l -> {
+                    return !l.trim().equals("");
+                }).toArray(String[]::new);
+
+                // Handle command operation
+                PreparedStatement pstmt = this.handleCommands(parsedLine);
+                if (pstmt == null)
                     break;
+                pstmt.execute();
             }
         } catch (FileNotFoundException e) {
             System.err.printf(
                     "There was a problem reading %s. It might not exist or is already open in another program.\n",
                     file);
+        } catch (SQLException e) {
+            System.err.println("Could not execute SQL query.");
+            System.err.println(e);
         }
     }
 
-    private boolean handleCommands(final String[] parsedLine) {
+    private PreparedStatement handleCommands(final String[] parsedLine) {
         try {
             final int cmd = Integer.parseInt(parsedLine[0]);
+            System.out.println("Command: " + cmd);
             switch (cmd) {
             case 1:
                 // Perform delete on existing employee
-                return true;
+                return null;
             case 2:
                 // Perform insertion on employee order: ename, deptName, salary, city
-                return true;
+                final PreparedStatement pstmt = this.conn
+                        .prepareStatement("INSERT INTO employee (ename, deptName, salary, city) VALUES(?, ?, ?, ?)");
+                pstmt.setString(1, parsedLine[1]);
+                pstmt.setString(2, parsedLine[2]);
+                pstmt.setDouble(3, Double.parseDouble(parsedLine[3]));
+                pstmt.setString(4, parsedLine[4]);
+                return pstmt;
             case 3:
                 // Perform delete on existing department tuple
-                return true;
+                return null;
             case 4:
                 // Perform insertion on department order: deptName, mname
-                return true;
+                return null;
             case 5:
-                return true;
+                return null;
             case 6:
-                return true;
+                return null;
             default:
                 System.err.println("Unknown command");
-                return false;
+                return null;
             }
         } catch (NumberFormatException e) {
             System.err.println("Command type must be a number.");
-            return false;
+            return null;
+        } catch (SQLException e) {
+            System.err.println("Incorrect command params provided.");
+            return null;
         }
     }
 }
