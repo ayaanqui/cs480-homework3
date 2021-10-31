@@ -82,6 +82,17 @@ public class App {
                 return prep;
             case 2:
                 // Perform insertion on employee order: ename, deptName, salary, city
+                // Before insertion check if ename already exists in the db
+                prep = this.conn.prepareStatement("SELECT COUNT(ename) FROM employee WHERE ename = ?");
+                prep.setString(1, parsedLine[1]);
+                ResultSet enameSet = prep.executeQuery();
+                // If employee already exists then do not perform insert
+                if (enameSet.next() && enameSet.getInt(1) == 1) {
+                    System.out.println("Duplicate name");
+                    return null;
+                }
+
+                // Insert details into database
                 prep = this.conn
                         .prepareStatement("INSERT INTO employee (ename, deptName, salary, city) VALUES(?, ?, ?, ?)");
                 prep.setString(1, parsedLine[1]);
