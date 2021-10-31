@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -56,16 +57,15 @@ public class App {
 
                 // Handle command operation
                 final PreparedStatement preparedReturn = this.handleCommands(parsedLine);
-                if (preparedReturn == null)
-                    break;
-                preparedReturn.execute();
+                if (preparedReturn != null)
+                    preparedReturn.execute();
             }
         } catch (FileNotFoundException e) {
             System.err.printf(
                     "There was a problem reading %s. It might not exist or is already open in another program.\n",
                     file);
         } catch (SQLException e) {
-            System.err.println("Could not execute SQL query.");
+            System.err.println("Could not: execute SQL query.");
             System.err.println(e);
         }
     }
@@ -73,31 +73,45 @@ public class App {
     private PreparedStatement handleCommands(final String[] parsedLine) {
         try {
             final int cmd = Integer.parseInt(parsedLine[0]);
-            PreparedStatement pstmt = null;
+            PreparedStatement prep = null;
             switch (cmd) {
             case 1:
                 // Perform delete on existing employee
-                pstmt = this.conn.prepareStatement("DELETE FROM employee WHERE ename = ?");
-                pstmt.setString(1, parsedLine[1]);
-                return pstmt;
+                prep = this.conn.prepareStatement("DELETE FROM employee WHERE ename = ?");
+                prep.setString(1, parsedLine[1]);
+                return prep;
             case 2:
                 // Perform insertion on employee order: ename, deptName, salary, city
-                pstmt = this.conn
+                prep = this.conn
                         .prepareStatement("INSERT INTO employee (ename, deptName, salary, city) VALUES(?, ?, ?, ?)");
-                pstmt.setString(1, parsedLine[1]);
-                pstmt.setString(2, parsedLine[2]);
-                pstmt.setDouble(3, Double.parseDouble(parsedLine[3]));
-                pstmt.setString(4, parsedLine[4]);
-                return pstmt;
+                prep.setString(1, parsedLine[1]);
+                prep.setString(2, parsedLine[2]);
+                prep.setDouble(3, Double.parseDouble(parsedLine[3]));
+                prep.setString(4, parsedLine[4]);
+                return prep;
             case 3:
                 // Perform delete on existing department tuple
-                pstmt = this.conn.prepareStatement("DELETE FROM department WHERE deptName = ?");
-                pstmt.setString(1, parsedLine[1]);
-                return pstmt;
+                prep = this.conn.prepareStatement("DELETE FROM department WHERE deptName = ?");
+                prep.setString(1, parsedLine[1]);
+                return prep;
             case 4:
                 // Perform insertion on department order: deptName, mname
-                return null;
+                prep = this.conn.prepareStatement("INSERT INTO department (deptName, ename) VALUES(?, ?)");
+                prep.setString(1, parsedLine[1]);
+                prep.setString(2, parsedLine[2]);
+                return prep;
             case 5:
+                // List names of all employees who work directly or indirectly for a given
+                // manager
+                prep = this.conn.prepareStatement(
+                        "SELECT ename FROM department AS `d` INNER JOIN employee `e` ON e.mname = d.ename WHERE mname = ?");
+                prep.setString(1, parsedLine[1]);
+                ResultSet result = prep.executeQuery();
+                boolean hasNext = result.next();
+                while (hasNext) {
+                    result.getString("ename");
+                    hasNext = result.next();
+                }
                 return null;
             case 6:
                 return null;
