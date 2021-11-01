@@ -77,17 +77,20 @@ public class App {
             switch (cmd) {
             case 1:
                 // Perform delete on existing employee
+                // Check to see if the ename exists
+                if (!employeeExists(parsedLine[1])) {
+                    System.out.println("Not found");
+                    return null;
+                }
+
                 prep = this.conn.prepareStatement("DELETE FROM employee WHERE ename = ?");
                 prep.setString(1, parsedLine[1]);
+                System.out.println("Deleted");
                 return prep;
             case 2:
                 // Perform insertion on employee order: ename, deptName, salary, city
                 // Before insertion check if ename already exists in the db
-                prep = this.conn.prepareStatement("SELECT COUNT(ename) FROM employee WHERE ename = ?");
-                prep.setString(1, parsedLine[1]);
-                ResultSet enameSet = prep.executeQuery();
-                // If employee already exists then do not perform insert
-                if (enameSet.next() && enameSet.getInt(1) == 1) {
+                if (employeeExists(parsedLine[1])) {
                     System.out.println("Duplicate name");
                     return null;
                 }
@@ -99,6 +102,7 @@ public class App {
                 prep.setString(2, parsedLine[2]);
                 prep.setDouble(3, Double.parseDouble(parsedLine[3]));
                 prep.setString(4, parsedLine[4]);
+                System.out.println("Added");
                 return prep;
             case 3:
                 // Perform delete on existing department tuple
@@ -140,5 +144,15 @@ public class App {
             System.err.println("Incorrect number of params provided.");
             return null;
         }
+    }
+
+    private boolean employeeExists(String ename) throws SQLException {
+        PreparedStatement prep = this.conn.prepareStatement("SELECT COUNT(ename) FROM employee WHERE ename = ?");
+        prep.setString(1, ename);
+        ResultSet enameSet = prep.executeQuery();
+        // If enameSet column is not 0 then employee exists
+        if (enameSet.next() && enameSet.getInt(1) >= 1)
+            return true;
+        return false;
     }
 }
