@@ -117,6 +117,17 @@ public class App {
                 // Perform delete on existing department tuple
                 deptName = parsedLine[1];
 
+                if (!this.departmentExists(deptName)) {
+                    System.out.println("Department not found");
+                    return null;
+                }
+
+                // Set all employee with the department name as deptName to NULL
+                PreparedStatement updateEmployees = this.conn
+                        .prepareStatement("UPDATE employee SET deptName = NULL WHERE deptName = ?");
+                updateEmployees.setString(1, deptName);
+                updateEmployees.executeUpdate();
+
                 prep = this.conn.prepareStatement("DELETE FROM department WHERE deptName = ?");
                 prep.setString(1, deptName);
                 return prep;
@@ -134,6 +145,7 @@ public class App {
                 prep = this.conn.prepareStatement("INSERT INTO department (deptName, mname) VALUES(?, ?)");
                 prep.setString(1, deptName);
                 prep.setString(2, mname);
+                System.out.println("Department added");
                 return prep;
             case 5:
                 // List names of all employees who work directly or indirectly for a given
