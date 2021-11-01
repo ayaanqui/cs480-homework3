@@ -88,12 +88,8 @@ public class DB {
      */
     protected static void createTables(final Connection conn) {
         try (Statement statement = conn.createStatement()) {
-            String createEmployeeTable = "CREATE TABLE IF NOT EXISTS employee" + "(ename VARCHAR(255) NOT NULL,"
-                    + " deptName VARCHAR(255) NOT NULL," + " salary DECIMAL(13,2) NOT NULL,"
-                    + " city VARCHAR(255) NOT NULL," + " PRIMARY KEY (ename))";
-            String createDepartmentTable = "CREATE TABLE IF NOT EXISTS department" + "(deptName VARCHAR(255) NOT NULL,"
-                    + " mname VARCHAR(255) NOT NULL," + " PRIMARY KEY (deptName),"
-                    + " FOREIGN KEY (mname) REFERENCES employee(ename) ON DELETE CASCADE ON UPDATE CASCADE)";
+            String createEmployeeTable = "CREATE TABLE IF NOT EXISTS employee (ename VARCHAR(255) NOT NULL, deptName VARCHAR(255) NOT NULL, salary DECIMAL(13,2) NOT NULL, city VARCHAR(255) NOT NULL, PRIMARY KEY (ename))";
+            String createDepartmentTable = "CREATE TABLE IF NOT EXISTS department (deptName VARCHAR(255) NOT NULL, mname VARCHAR(255) NOT NULL, PRIMARY KEY (deptName), FOREIGN KEY (mname) REFERENCES employee(ename) ON DELETE CASCADE ON UPDATE CASCADE)";
 
             // Create employee table
             statement.executeUpdate(createEmployeeTable);
