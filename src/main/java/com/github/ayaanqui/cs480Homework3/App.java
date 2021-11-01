@@ -178,12 +178,13 @@ public class App {
         return false;
     }
 
-    private boolean departmentExists(String mname) throws SQLException {
-        PreparedStatement prep = this.conn.prepareStatement("SELECT COUNT(mname) FROM department WHERE mname = ?");
-        prep.setString(1, mname);
-        ResultSet mnameSet = prep.executeQuery();
+    private boolean departmentExists(String deptName) throws SQLException {
+        PreparedStatement prep = this.conn
+                .prepareStatement("SELECT COUNT(deptName) FROM department WHERE deptName = ?");
+        prep.setString(1, deptName);
+        ResultSet deptNameSet = prep.executeQuery();
         // If enameSet column is not 0 then employee exists
-        if (mnameSet.next() && mnameSet.getInt(1) >= 1)
+        if (deptNameSet.next() && deptNameSet.getInt(1) >= 1)
             return true;
         return false;
     }
