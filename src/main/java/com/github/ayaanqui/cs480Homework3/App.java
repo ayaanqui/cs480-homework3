@@ -153,13 +153,11 @@ public class App {
                 mname = parsedLine[1];
 
                 prep = this.conn.prepareStatement(
-                        "SELECT ename FROM department AS `d` INNER JOIN employee `e` ON e.mname = d.ename WHERE mname = ?");
-                prep.setString(1, parsedLine[1]);
+                        "SELECT ename FROM department AS `d` INNER JOIN employee `e` ON e.deptName = d.deptName WHERE d.mname = ?");
+                prep.setString(1, mname);
                 ResultSet result = prep.executeQuery();
-                boolean hasNext = result.next();
-                while (hasNext) {
-                    result.getString("ename");
-                    hasNext = result.next();
+                while (result.next()) {
+                    System.out.println(result.getString("ename"));
                 }
                 return null;
             case 6:

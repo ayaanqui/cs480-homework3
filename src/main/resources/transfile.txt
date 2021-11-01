@@ -4,4 +4,8 @@
 2 Cathy AI 160000 Evanston
 2 Edwards DataScience 200000 Chicago
 2 Nina DataScience 180000 Southbend
-1 John
+2 Ayaan Software 300000 Chicago
+4 DataScience John
+4 Software Ayaan
+3 DataScience
+5 Ayaan
