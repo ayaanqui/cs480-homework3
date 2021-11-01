@@ -45,7 +45,8 @@ public class App {
         try (final Scanner scanner = new Scanner(new File(classLoader.getResource(file).getFile()))) {
             while (scanner.hasNextLine()) {
                 final String line = scanner.nextLine().trim();
-                if (line.charAt(0) == '*')
+                // Ignore lines that start with a * or #
+                if (line.charAt(0) == '*' || line.charAt(0) == '#')
                     continue;
 
                 // Split line by space into String array
