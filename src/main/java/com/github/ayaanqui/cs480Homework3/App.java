@@ -75,23 +75,31 @@ public class App {
         try {
             final int cmd = Integer.parseInt(parsedLine[0]);
             PreparedStatement prep = null;
+            String deptName, ename, mname, city, salary;
             switch (cmd) {
             case 1:
                 // Perform delete on existing employee
                 // Check to see if the ename exists
+                ename = parsedLine[1];
+
                 if (!employeeExists(parsedLine[1])) {
                     System.out.println("Not found");
                     return null;
                 }
 
                 prep = this.conn.prepareStatement("DELETE FROM employee WHERE ename = ?");
-                prep.setString(1, parsedLine[1]);
+                prep.setString(1, ename);
                 System.out.println("Deleted");
                 return prep;
             case 2:
                 // Perform insertion on employee order: ename, deptName, salary, city
                 // Before insertion check if ename already exists in the db
-                if (employeeExists(parsedLine[1])) {
+                ename = parsedLine[1];
+                deptName = parsedLine[2];
+                salary = parsedLine[3];
+                city = parsedLine[4];
+
+                if (employeeExists(ename)) {
                     System.out.println("Duplicate name");
                     return null;
                 }
@@ -99,26 +107,39 @@ public class App {
                 // Insert details into database
                 prep = this.conn
                         .prepareStatement("INSERT INTO employee (ename, deptName, salary, city) VALUES(?, ?, ?, ?)");
-                prep.setString(1, parsedLine[1]);
-                prep.setString(2, parsedLine[2]);
-                prep.setDouble(3, Double.parseDouble(parsedLine[3]));
-                prep.setString(4, parsedLine[4]);
+                prep.setString(1, ename);
+                prep.setString(2, deptName);
+                prep.setDouble(3, Double.parseDouble(salary));
+                prep.setString(4, city);
                 System.out.println("Added");
                 return prep;
             case 3:
                 // Perform delete on existing department tuple
+                deptName = parsedLine[1];
+
                 prep = this.conn.prepareStatement("DELETE FROM department WHERE deptName = ?");
-                prep.setString(1, parsedLine[1]);
+                prep.setString(1, deptName);
                 return prep;
             case 4:
                 // Perform insertion on department order: deptName, mname
-                prep = this.conn.prepareStatement("INSERT INTO department (deptName, ename) VALUES(?, ?)");
-                prep.setString(1, parsedLine[1]);
-                prep.setString(2, parsedLine[2]);
+                deptName = parsedLine[1];
+                mname = parsedLine[2];
+
+                // Check if manager name exists in the employee table
+                if (!employeeExists(mname)) {
+                    System.out.println("Employee does not exist");
+                    return null;
+                }
+
+                prep = this.conn.prepareStatement("INSERT INTO department (deptName, mname) VALUES(?, ?)");
+                prep.setString(1, deptName);
+                prep.setString(2, mname);
                 return prep;
             case 5:
                 // List names of all employees who work directly or indirectly for a given
                 // manager
+                mname = parsedLine[1];
+
                 prep = this.conn.prepareStatement(
                         "SELECT ename FROM department AS `d` INNER JOIN employee `e` ON e.mname = d.ename WHERE mname = ?");
                 prep.setString(1, parsedLine[1]);
