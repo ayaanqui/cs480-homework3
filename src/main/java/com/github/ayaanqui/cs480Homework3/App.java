@@ -177,4 +177,14 @@ public class App {
             return true;
         return false;
     }
+
+    private boolean departmentExists(String mname) throws SQLException {
+        PreparedStatement prep = this.conn.prepareStatement("SELECT COUNT(mname) FROM department WHERE mname = ?");
+        prep.setString(1, mname);
+        ResultSet mnameSet = prep.executeQuery();
+        // If enameSet column is not 0 then employee exists
+        if (mnameSet.next() && mnameSet.getInt(1) >= 1)
+            return true;
+        return false;
+    }
 }
