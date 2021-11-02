@@ -114,6 +114,7 @@ public class App {
                 salary = parsedLine[3];
                 city = parsedLine[4];
 
+                // Check if ename exists in the employee table
                 if (this.employeeExists(ename)) {
                     System.out.println("Duplicate name");
                     return null;
@@ -132,6 +133,7 @@ public class App {
                 // Perform delete on existing department tuple
                 deptName = parsedLine[1];
 
+                // Check if deptName exists in the departments table
                 if (!this.departmentExists(deptName)) {
                     System.out.println("Department not found");
                     return null;
@@ -151,7 +153,7 @@ public class App {
                 deptName = parsedLine[1];
                 mname = parsedLine[2];
 
-                // Check if manager name exists in the employee table
+                // Check if mname exists in the employee table
                 if (!this.employeeExists(mname)) {
                     System.out.println("Employee does not exist");
                     return null;
@@ -167,6 +169,12 @@ public class App {
                 // manager
                 mname = parsedLine[1];
 
+                // Check if mname exists in the employee table
+                if (!this.employeeExists(mname)) {
+                    System.out.println("Manager does not exist");
+                    return null;
+                }
+
                 prep = this.conn.prepareStatement(
                         "SELECT ename FROM department AS `d` INNER JOIN employee `e` ON e.deptName = d.deptName WHERE d.mname = ?");
                 prep.setString(1, mname);
@@ -177,6 +185,8 @@ public class App {
                 return null;
             case 6:
                 ename = parsedLine[1];
+
+                // Check if ename exists in the employee table
                 if (!this.employeeExists(ename)) {
                     System.out.println("Employee does not exist");
                     return null;
