@@ -32,8 +32,10 @@ public class App {
         App app = new App(conn);
         app.startProgram();
 
-        // Since the program has finished execution close MySQL connection
         try {
+            // Make sure to drop all tables
+            DB.dropAllTables(conn);
+            // Close connection
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();

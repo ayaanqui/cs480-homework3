@@ -88,10 +88,6 @@ public class DB {
      */
     protected static void createTables(final Connection conn) {
         try (Statement statement = conn.createStatement()) {
-            // Make sure to drop tables first thing...
-            statement.executeUpdate("DROP TABLE IF EXISTS department");
-            statement.executeUpdate("DROP TABLE IF EXISTS employee");
-
             String createEmployeeTable = "CREATE TABLE IF NOT EXISTS employee (ename VARCHAR(255) NOT NULL, deptName VARCHAR(255), salary DECIMAL(13,2) NOT NULL, city VARCHAR(255) NOT NULL, PRIMARY KEY (ename))";
             String createDepartmentTable = "CREATE TABLE IF NOT EXISTS department (deptName VARCHAR(255) NOT NULL, mname VARCHAR(255) NOT NULL, PRIMARY KEY (deptName), FOREIGN KEY (mname) REFERENCES employee(ename) ON DELETE CASCADE ON UPDATE CASCADE)";
 
@@ -99,6 +95,16 @@ public class DB {
             statement.executeUpdate(createEmployeeTable);
             // Create department table with foreign key refrencing employee.ename
             statement.executeUpdate(createDepartmentTable);
+            statement.close();
+        } catch (SQLException e) {
+            System.err.println(e);
+        }
+    }
+
+    protected static void dropAllTables(final Connection conn) {
+        try (Statement statement = conn.createStatement()) {
+            statement.executeUpdate("DROP TABLE IF EXISTS department");
+            statement.executeUpdate("DROP TABLE IF EXISTS employee");
             statement.close();
         } catch (SQLException e) {
             System.err.println(e);
