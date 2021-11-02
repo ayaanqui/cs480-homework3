@@ -43,9 +43,12 @@ public class App {
     }
 
     private void startProgram() {
+        // Start by reading transfile.txt from the resources folder
         final String file = "transfile.txt";
         try (final Scanner scanner = new Scanner(new File(classLoader.getResource(file).getFile()))) {
+            // Read each line from transfile.txt
             while (scanner.hasNextLine()) {
+                // Get line from transfile.txt and trim leading and trailing whitespace
                 final String line = scanner.nextLine().trim();
                 // Ignore lines that start with a * or #
                 if (line.charAt(0) == '*' || line.charAt(0) == '#' || line.isEmpty())
@@ -60,6 +63,8 @@ public class App {
 
                 // Handle command operation
                 final PreparedStatement preparedReturn = this.handleCommands(parsedLine);
+                // If preparedReturn was not null then we can execute the query
+                // Otherwise do nothing (since it has already been taken care of in handleCommands method)
                 if (preparedReturn != null)
                     preparedReturn.execute();
             }
@@ -70,22 +75,29 @@ public class App {
         } catch (SQLException e) {
             System.err.println("Could not: execute SQL query.");
             System.err.println(e);
+        } catch (NullPointerException e) {
+            System.err.println("Could not open transfile.txt null passed for new File");
         }
     }
 
     private PreparedStatement handleCommands(final String[] parsedLine) {
         try {
+            // Parse first command which should be a number
             final int cmd = Integer.parseInt(parsedLine[0]);
+
+            // Initialize common variables used in the switch statement
             PreparedStatement prep = null;
             String deptName, ename, mname, city, salary;
             ResultSet result;
+
+            // Check against the first command
             switch (cmd) {
             case 1:
                 // Perform delete on existing employee
                 // Check to see if the ename exists
                 ename = parsedLine[1];
 
-                if (!employeeExists(parsedLine[1])) {
+                if (!this.employeeExists(parsedLine[1])) {
                     System.out.println("Not found");
                     return null;
                 }
@@ -102,7 +114,7 @@ public class App {
                 salary = parsedLine[3];
                 city = parsedLine[4];
 
-                if (employeeExists(ename)) {
+                if (this.employeeExists(ename)) {
                     System.out.println("Duplicate name");
                     return null;
                 }
@@ -140,7 +152,7 @@ public class App {
                 mname = parsedLine[2];
 
                 // Check if manager name exists in the employee table
-                if (!employeeExists(mname)) {
+                if (!this.employeeExists(mname)) {
                     System.out.println("Employee does not exist");
                     return null;
                 }
