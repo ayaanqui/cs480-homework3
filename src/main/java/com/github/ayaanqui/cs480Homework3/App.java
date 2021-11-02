@@ -78,6 +78,7 @@ public class App {
             final int cmd = Integer.parseInt(parsedLine[0]);
             PreparedStatement prep = null;
             String deptName, ename, mname, city, salary;
+            ResultSet result;
             switch (cmd) {
             case 1:
                 // Perform delete on existing employee
@@ -157,12 +158,24 @@ public class App {
                 prep = this.conn.prepareStatement(
                         "SELECT ename FROM department AS `d` INNER JOIN employee `e` ON e.deptName = d.deptName WHERE d.mname = ?");
                 prep.setString(1, mname);
-                ResultSet result = prep.executeQuery();
+                result = prep.executeQuery();
                 while (result.next()) {
                     System.out.println(result.getString("ename"));
                 }
                 return null;
             case 6:
+                ename = parsedLine[1];
+                if (!this.employeeExists(ename)) {
+                    System.out.println("Employee does not exist");
+                    return null;
+                }
+
+                prep = this.conn.prepareStatement("SELECT deptName FROM department WHERE mname = ?");
+                prep.setString(1, ename);
+                result = prep.executeQuery();
+                while (result.next()) {
+                    System.out.println(result.getString("deptName"));
+                }
                 return null;
             default:
                 System.err.println("Unknown command");
