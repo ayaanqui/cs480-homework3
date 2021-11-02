@@ -101,6 +101,11 @@ public class DB {
         }
     }
 
+    /**
+     * Given an active connection to the DB, drop ALL tables used in the database
+     * 
+     * @param conn Active MySQL connection
+     */
     protected static void dropAllTables(final Connection conn) {
         try (Statement statement = conn.createStatement()) {
             statement.executeUpdate("DROP TABLE IF EXISTS department");
