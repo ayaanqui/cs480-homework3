@@ -180,24 +180,21 @@ public class App {
         }
     }
 
-    private boolean employeeExists(String ename) throws SQLException {
-        PreparedStatement prep = this.conn.prepareStatement("SELECT COUNT(ename) FROM employee WHERE ename = ?");
-        prep.setString(1, ename);
-        ResultSet enameSet = prep.executeQuery();
+    private boolean existence(String query, String value) throws SQLException {
+        PreparedStatement prep = this.conn.prepareStatement(query);
+        prep.setString(1, value);
+        ResultSet resultSet = prep.executeQuery();
         // If enameSet column is not 0 then employee exists
-        if (enameSet.next() && enameSet.getInt(1) >= 1)
+        if (resultSet.next() && resultSet.getInt(1) >= 1)
             return true;
         return false;
     }
 
+    private boolean employeeExists(String ename) throws SQLException {
+        return this.existence("SELECT COUNT(ename) FROM employee WHERE ename = ?", ename);
+    }
+
     private boolean departmentExists(String deptName) throws SQLException {
-        PreparedStatement prep = this.conn
-                .prepareStatement("SELECT COUNT(deptName) FROM department WHERE deptName = ?");
-        prep.setString(1, deptName);
-        ResultSet deptNameSet = prep.executeQuery();
-        // If enameSet column is not 0 then employee exists
-        if (deptNameSet.next() && deptNameSet.getInt(1) >= 1)
-            return true;
-        return false;
+        return this.existence("SELECT COUNT(deptName) FROM department WHERE deptName = ?", deptName);
     }
 }
