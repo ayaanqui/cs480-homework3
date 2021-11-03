@@ -186,8 +186,11 @@ public class App {
                     return null;
                 }
 
+                // Create Stack to store all names that work under mname
                 Stack<String> names = new Stack<>();
+                // Adds all employees that work directly under mname to Stack
                 this.getUnderlings(mname, names);
+                // Recursively adds all indirect employees to Stack and prints them
                 this.getAllUnderlings(names);
                 return null;
             case 6:
@@ -241,10 +244,12 @@ public class App {
     }
 
     private void getUnderlings(String mname, Stack<String> names) throws SQLException {
+        // Perform SELECT for mname to get all direct workers
         PreparedStatement prep = this.conn.prepareStatement(
                 "SELECT ename FROM department AS `d` INNER JOIN employee `e` ON e.deptName = d.deptName WHERE d.mname = ? AND e.ename != d.mname");
         prep.setString(1, mname);
         ResultSet result = prep.executeQuery();
+        // For each row add them to names
         while (result.next()) {
             String resEname = result.getString("ename");
             names.push(resEname);
@@ -252,9 +257,13 @@ public class App {
     }
 
     private void getAllUnderlings(Stack<String> names) throws SQLException {
+        // Keep the loop until stack is empty
+        // for each name we pop so the stack decreases by one each time
+        // we add more names if we find more workers
         while (!names.isEmpty()) {
             String mname = names.pop();
             try {
+                // Add more workers in the stack for mname
                 getUnderlings(mname, names);
             } catch (SQLException e) {}
             System.out.println(mname);
