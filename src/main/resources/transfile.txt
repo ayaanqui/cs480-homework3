@@ -1,5 +1,9 @@
 2 Ayaan Software 300000 Chicago
-2 Ayaan Gray 1 Japan
-1 Cooper
 2 Cooper Software 50000 Chicago
-1 Ayaan
+2 Tracer Software 50000 Chicago
+2 Mike Design 10 Kal
+2 Jill CEO 1000000 Chicago
+4 Software Ayaan
+4 Design Cooper
+5 Ayaan
+5 Jill

@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class App {
     private final ClassLoader classLoader;
@@ -185,13 +186,9 @@ public class App {
                     return null;
                 }
 
-                prep = this.conn.prepareStatement(
-                        "SELECT ename FROM department AS `d` INNER JOIN employee `e` ON e.deptName = d.deptName WHERE d.mname = ?");
-                prep.setString(1, mname);
-                result = prep.executeQuery();
-                while (result.next()) {
-                    System.out.println(result.getString("ename"));
-                }
+                Stack<String> names = new Stack<>();
+                this.getUnderlings(mname, names);
+                this.getAllUnderlings(names);
                 return null;
             case 6:
                 ename = parsedLine[1];
@@ -241,5 +238,26 @@ public class App {
 
     private boolean departmentExists(String deptName) throws SQLException {
         return this.existence("SELECT COUNT(deptName) FROM department WHERE deptName = ?", deptName);
+    }
+
+    private void getUnderlings(String mname, Stack<String> names) throws SQLException {
+        PreparedStatement prep = this.conn.prepareStatement(
+                "SELECT ename FROM department AS `d` INNER JOIN employee `e` ON e.deptName = d.deptName WHERE d.mname = ? AND e.ename != d.mname");
+        prep.setString(1, mname);
+        ResultSet result = prep.executeQuery();
+        while (result.next()) {
+            String resEname = result.getString("ename");
+            names.push(resEname);
+        }
+    }
+
+    private void getAllUnderlings(Stack<String> names) throws SQLException {
+        while (!names.isEmpty()) {
+            String mname = names.pop();
+            try {
+                getUnderlings(mname, names);
+            } catch (SQLException e) {}
+            System.out.println(mname);
+        }
     }
 }
