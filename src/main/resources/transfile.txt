@@ -1,9 +1,37 @@
-2 Ayaan Software 300000 Chicago
+# Adding employees
+2 Ayaan CTO 300000 Chicago
 2 Cooper Software 50000 Chicago
 2 Tracer Software 50000 Chicago
 2 Mike Design 10 Kal
-2 Jill CEO 1000000 Chicago
+2 Jill CTO 1000000 Chicago
+4 CTO Jill
+4 Software Jill
+# Ayaan works under Jill
 4 Software Ayaan
+# Cooper and Tracer work directly under Ayaan
+# Mike works directly under Cooper
 4 Design Cooper
 5 Ayaan
 5 Jill
+3 CTO
+# Should return nothing
+5 Jill
+# Should only return Mike
+5 Cooper
+# Remove Ayaan
+1 Ayaan
+# Should return Manager does not exist
+5 Ayaan
+1 Jill
+1 Jill
+2 Ayaan CTO 40 Kal
+# Should return Duplicate name
+2 Ayaan CTO 4000 Michigan
+6 Ayaan
+# Should return Mike
+6 Cooper
+4 Software Ayaan
+# Should return Software
+6 Ayaan
+# Should return the same out put as line 14
+5 Ayaan

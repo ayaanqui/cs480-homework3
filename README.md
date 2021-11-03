@@ -5,8 +5,11 @@
 2. Change the contents of `db_config.json` by replacing all `<...>` with the appropriate database config
 3. Save the file
 
-## `transfile.txt`
-This is the file that contains all the commands. Make sure all commands are placed in this file.
+## Transfile
+The `transfile.txt` file is also located in the same directory as `db_config.sample.json` in the `src/main/resources/` 
+This file contains all the commands that the program will execute. Make sure all commands are placed in this file, before runnign the program.
+
+This file also supports comments by adding `#` or `*` in front of each line that you would like to comment out. This was meant purely for debugging purposes.
 
 
 ## Running the program
