@@ -88,7 +88,7 @@ public class App {
             // Initialize common variables used in the switch statement
             PreparedStatement prep = null;
             String deptName, ename, mname, city, salary;
-            ResultSet result;
+            ResultSet result = null;
 
             // Check against the first command
             switch (cmd) {
@@ -134,7 +134,7 @@ public class App {
 
                 // Check if deptName exists in the departments table
                 if (!this.departmentExists(deptName)) {
-                    System.out.println("Department not found");
+                    System.out.println("Not found");
                     return null;
                 }
 
@@ -146,6 +146,7 @@ public class App {
 
                 prep = this.conn.prepareStatement("DELETE FROM department WHERE deptName = ?");
                 prep.setString(1, deptName);
+                System.out.println("Deleted");
                 return prep;
             case 4:
                 // Perform insertion on department order: deptName, mname
@@ -158,6 +159,16 @@ public class App {
                     return null;
                 }
 
+                // Check if deptName is already in the department table
+                // If the department already exists modify it and return
+                if (this.departmentExists(deptName)) {
+                    prep = this.conn.prepareStatement("UPDATE department SET mname = ? WHERE deptName = ?");
+                    prep.setString(1, mname);
+                    prep.setString(2, deptName);
+                    prep.executeUpdate();
+                    System.out.println("Department added");
+                    return null;
+                }
                 prep = this.conn.prepareStatement("INSERT INTO department (deptName, mname) VALUES(?, ?)");
                 prep.setString(1, deptName);
                 prep.setString(2, mname);
