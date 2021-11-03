@@ -101,7 +101,6 @@ public class App {
                     System.out.println("Not found");
                     return null;
                 }
-
                 prep = this.conn.prepareStatement("DELETE FROM employee WHERE ename = ?");
                 prep.setString(1, ename);
                 System.out.println("Deleted");
